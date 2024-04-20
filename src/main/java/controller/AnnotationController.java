@@ -1,13 +1,16 @@
 package controller;
-import java.util.List;
+import java.util.*;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.transform.Scale;
@@ -15,7 +18,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
 import java.net.URL;
-import java.util.ResourceBundle;
+
 public class AnnotationController implements Controller {
     @FXML
     public VBox uploadedImages;
@@ -28,6 +31,125 @@ public class AnnotationController implements Controller {
     private ImageView currentSelectedImageView;
 
     private List<File> selectedImages;
+
+    private List<ImageView> selectedImageViews = new List<ImageView>() {
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            return false;
+        }
+
+        @Override
+        public Iterator<ImageView> iterator() {
+            return null;
+        }
+
+        @Override
+        public Object[] toArray() {
+            return new Object[0];
+        }
+
+        @Override
+        public <T> T[] toArray(T[] a) {
+            return null;
+        }
+
+        @Override
+        public boolean add(ImageView imageView) {
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return false;
+        }
+
+        @Override
+        public boolean containsAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends ImageView> c) {
+            return false;
+        }
+
+        @Override
+        public boolean addAll(int index, Collection<? extends ImageView> c) {
+            return false;
+        }
+
+        @Override
+        public boolean removeAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public boolean retainAll(Collection<?> c) {
+            return false;
+        }
+
+        @Override
+        public void clear() {
+
+        }
+
+        @Override
+        public ImageView get(int index) {
+            return null;
+        }
+
+        @Override
+        public ImageView set(int index, ImageView element) {
+            return null;
+        }
+
+        @Override
+        public void add(int index, ImageView element) {
+
+        }
+
+        @Override
+        public ImageView remove(int index) {
+            return null;
+        }
+
+        @Override
+        public int indexOf(Object o) {
+            return 0;
+        }
+
+        @Override
+        public int lastIndexOf(Object o) {
+            return 0;
+        }
+
+        @Override
+        public ListIterator<ImageView> listIterator() {
+            return null;
+        }
+
+        @Override
+        public ListIterator<ImageView> listIterator(int index) {
+            return null;
+        }
+
+        @Override
+        public List<ImageView> subList(int fromIndex, int toIndex) {
+            return List.of();
+        }
+    }; //For clicked on images in side menu
+
+    private boolean shift = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -72,13 +194,18 @@ public class AnnotationController implements Controller {
         imageView.setPreserveRatio(true);
 
         imageView.setOnMouseClicked(event -> {
-            selectImage(image, imageView);
+            if (event.isAltDown()) {
+                selectImage(image, imageView, true);
+            }
+            else {
+                selectImage(image, imageView, false);
+            }
         });
 
         uploadedImages.getChildren().add(imageView);
     }
 
-    private void selectImage(Image image, ImageView imageView) {
+    private void selectImage(Image image, ImageView imageView, Boolean multi) {
 
         if (selectedImageView != null && currentSelectedImageView != imageView) {
             selectedImageView.setImage(image);
@@ -117,8 +244,17 @@ public class AnnotationController implements Controller {
                 }
             });
 
+            if(!multi && !selectedImageViews.isEmpty()){
+                selectedImageViews.clear();
+                for (Node iV : uploadedImages.getChildren()) {
+                    iV.setStyle("");
+                }
+                System.out.println("multiple cleared");
+            }
+
             if (currentSelectedImageView != null){
-                currentSelectedImageView.setStyle("");
+                selectedImageViews.add(imageView);
+                //currentSelectedImageView.setStyle("");
             }
             imageView.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
             currentSelectedImageView = imageView;
@@ -134,7 +270,7 @@ public class AnnotationController implements Controller {
                 if (currentIndex < uploadedImages.getChildren().size() - 1) {
                     ImageView nextImageView = (ImageView) uploadedImages.getChildren().get(currentIndex + 1);
                     Image image = nextImageView.getImage();
-                    selectImage(image, nextImageView);
+                    selectImage(image, nextImageView, false);
                 }
             }
         } catch (Exception e) {
@@ -149,7 +285,7 @@ public class AnnotationController implements Controller {
                 if (currentIndex > 0) {
                     ImageView previousImageView = (ImageView) uploadedImages.getChildren().get(currentIndex - 1);
                     Image image = previousImageView.getImage();
-                    selectImage(image, previousImageView);
+                    selectImage(image, previousImageView, false);
                 }
             }
         }
