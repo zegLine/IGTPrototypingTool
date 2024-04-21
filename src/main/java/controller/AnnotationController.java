@@ -30,7 +30,7 @@ public class AnnotationController implements Controller {
     private ImageView selectedImageView;
     private ImageView currentSelectedImageView;
 
-    private List<File> selectedImages; //comment
+    private List<File> selectedImages; //commentsdw
 
     private List<ImageView> selectedImageViews = new List<ImageView>() {
         @Override
