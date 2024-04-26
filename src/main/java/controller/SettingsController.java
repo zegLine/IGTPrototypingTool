@@ -1,11 +1,16 @@
 package controller;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
 
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import util.CustomLogger;
@@ -15,6 +20,9 @@ public class SettingsController implements Controller {
 
     @FXML public CheckBox consoleOutput;
     @FXML public CheckBox searchForMoreVideos;
+    //Caesar
+    @FXML
+    private ComboBox<String> deviceList;
     @FXML public CheckBox verticalFG;
 
     @FXML public TextField videoWidth;
@@ -26,10 +34,15 @@ public class SettingsController implements Controller {
         userPreferences.putBoolean("logToConsole", consoleOutput.isSelected());
     }
 
-    @FXML
-    private void onSearchForMoreVideosClicked() {
-        userPreferences.putBoolean("searchForMoreVideos", searchForMoreVideos.isSelected());
-    }
+
+
+    //Caesar
+
+
+    // Dummy implementation to be replaced with actual device fetching logic
+
+    //Caesar
+
 
     @FXML
     private void onVerticalFGClicked(){
@@ -79,5 +92,9 @@ public class SettingsController implements Controller {
     @Override
     public void close() {
         unregisterController();
+    }
+
+
+    public void onSearchForMoreVideosClicked(ActionEvent actionEvent) {
     }
 }

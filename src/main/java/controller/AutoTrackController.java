@@ -52,6 +52,10 @@ public class AutoTrackController implements Controller {
     private static final Preferences userPreferencesGlobal = Preferences.userRoot().node("IGT_Settings");
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
+
+    private final CameraDetector cameraDetector = new CameraDetector();
+    @FXML
+    public ChoiceBox<String> cameraChoiceBox;
     @FXML
     public ChoiceBox<String> sourceChoiceBox;
     @FXML
@@ -126,7 +130,23 @@ public class AutoTrackController implements Controller {
         videoImagePlot.registerImageClickedHandler(this::onImageClicked);
 
         loadAvailableVideoDevicesAsync();
+
+        cameraChoiceBox.setValue("Cameras detected");
+
+        // Assuming you have a ChoiceBox named cameraChoiceBox
+        cameraChoiceBox.getItems().addAll(CameraDetector.detectCamera());
+
     }
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public void close() {
@@ -179,6 +199,9 @@ public class AutoTrackController implements Controller {
             });
         }).start();
     }
+
+
+
 
     /**
      * Tests out available video device ids. All devices that don't throw an error are added to the list.

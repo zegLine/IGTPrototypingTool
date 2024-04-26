@@ -35,6 +35,7 @@
                   </padding>
                   <Label text="Video Input" textAlignment="CENTER"/>
                   <ChoiceBox fx:id="sourceChoiceBox"/>
+                  <ChoiceBox fx:id="cameraChoiceBox"/>
                </HBox>
                <HBox>
                   <CheckBox fx:id="trackingConnectedStatusBox" disable="true" mnemonicParsing="false"

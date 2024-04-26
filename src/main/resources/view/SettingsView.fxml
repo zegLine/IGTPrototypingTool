@@ -8,6 +8,8 @@
 
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Label?>
+
+<?import javafx.scene.control.ComboBox?>
 <HBox spacing="40.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SettingsController">
     <padding>
         <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
@@ -40,6 +42,10 @@
             <VBox spacing="20">
                 <CheckBox fx:id="searchForMoreVideos" mnemonicParsing="false" onAction="#onSearchForMoreVideosClicked"
                           text="Search for more video devices"/>
+
+<!--                Caesar-->
+                <ComboBox fx:id="deviceList" disable="true"/>
+
 
                 <CheckBox fx:id="verticalFG" mnemonicParsing="false" onAction="#onVerticalFGClicked"
                           text="2d transform: replace y by z"/>
