@@ -131,15 +131,12 @@ public class AutoTrackController implements Controller {
 
         loadAvailableVideoDevicesAsync();
 
-        cameraChoiceBox.setValue("Cameras detected");
+        cameraChoiceBox.setValue("Select camera");
 
         // Assuming you have a ChoiceBox named cameraChoiceBox
         cameraChoiceBox.getItems().addAll(CameraDetector.detectCamera());
 
     }
-
-
-
 
 
 
