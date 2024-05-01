@@ -19,6 +19,11 @@ import javafx.scene.transform.Scale;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import util.AnnotationData;
+import javafx.fxml.FXML;
+import javafx.scene.chart.NumberAxis;
+import javafx.geometry.Side;
+import javafx.util.StringConverter;
+import javafx.geometry.Bounds;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,10 +55,20 @@ public class AnnotationController implements Controller {
     private List<File> selectedImages;
     private Set<String> uploadedFilePaths = new HashSet<>();
 
+    @FXML
+    private NumberAxis yAxis;
+    @FXML
+    private NumberAxis xAxis;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialization code goes here
+           yAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(yAxis) {
+            @Override
+            public String toString(Number value) {
+                return String.format("%.1f", Math.abs(value.doubleValue()));
+            }
+        });
+        xAxis.setSide(Side.TOP);
     }
 
     @FXML
@@ -138,6 +153,18 @@ public class AnnotationController implements Controller {
                             scale.setY(scale.getY() / zoomFactor);
                         }
                     }
+
+                    // Update the range of the axes based on the new scale
+                    double lowerBoundX = xAxis.getLowerBound() / scale.getX();
+                    double upperBoundX = xAxis.getUpperBound() / scale.getX();
+                    xAxis.setLowerBound(lowerBoundX);
+                    xAxis.setUpperBound(upperBoundX);
+
+                    double lowerBoundY = yAxis.getLowerBound() / scale.getY();
+                    double upperBoundY = yAxis.getUpperBound() / scale.getY();
+                    yAxis.setLowerBound(lowerBoundY);
+                    yAxis.setUpperBound(upperBoundY);
+
 
                     event.consume();
                 }

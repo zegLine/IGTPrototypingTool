@@ -9,6 +9,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.chart.NumberAxis?>
 
 <?import javafx.scene.Group?>
 <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="Infinity" maxWidth="Infinity"
@@ -82,9 +85,13 @@
                   <Insets right="10.0"/>
                </BorderPane.margin>
                <Group>
-                  <Pane fx:id="annotationPane">
-                     <ImageView fx:id="selectedImageView" fitHeight="500.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                  </Pane>
+           <GridPane fx:id="gridPane">
+            <Pane fx:id="annotationPane" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <ImageView fx:id="selectedImageView" fitHeight="500.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+            </Pane>
+            <NumberAxis fx:id="xAxis" id="xAxis" autoRanging="false" lowerBound="0.0" side="BOTTOM" tickUnit="0.1" upperBound="1.0" GridPane.columnIndex="1"/>
+           <NumberAxis fx:id="yAxis" autoRanging="false" lowerBound="-1.0" side="LEFT" tickUnit="0.1" upperBound="0.0" GridPane.rowIndex="1"/>
+         </GridPane>
                </Group>
             </ScrollPane>
          </center>
