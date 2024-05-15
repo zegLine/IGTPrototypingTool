@@ -36,6 +36,9 @@ import platform
 import sys
 import pyigtl as igtl
 from pathlib import Path
+import pyvirtualcam
+
+CAM = pyvirtualcam.Camera(width=640, height=480, fps=20)
  
 import torch
 
@@ -44,6 +47,7 @@ ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
+
 
 last_matrix = np.eye(4)
  
@@ -265,6 +269,11 @@ def run(
                     cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
                     cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
                 cv2.imshow(str(p), im0)
+
+                # Send RGB image to virtual camera
+                im0VIRT = cv2.cvtColor(im0, cv2.COLOR_BGR2RGB)
+                CAM.send(im0VIRT)
+
                 cv2.waitKey(1)  # 1 millisecond
 
             # Save results (image with detections)
