@@ -100,6 +100,15 @@ public class VisualizationManager {
      * LinkedList of all trackers
      */
     private LinkedList<Target> targets;
+    public LinkedList<Target> getTargets() {
+        return targets;
+    }
+    public void manuallyAddTarget(String name, double x, double y, double z) {
+        if (targets == null) targets = new LinkedList<>();
+        Target t = new Target(name, x, y, z);
+        this.targets.add(t);
+    }
+
     private ScrollPane scrollPane;
     private Group meshGroup;
 

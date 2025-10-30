@@ -17,6 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.json.JSONObject;
 import shapes.STLModel;
+import shapes.Target;
 import util.Persistence;
 
 import java.io.File;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
@@ -86,6 +88,7 @@ public class VisualizationController implements Controller {
 
     private final TreeItem<String> treeItemRoot = new TreeItem<>("Root");
     TreeItem<String> stlBranch = new TreeItem<>("Files");
+    TreeItem<String> targetsBranch = new TreeItem<>("Targets");
 
     private String[] trackerNames;
     @Override
@@ -96,6 +99,7 @@ public class VisualizationController implements Controller {
         stlTreeView.setShowRoot(false);
         stlTreeView.setRoot(treeItemRoot);
         treeItemRoot.getChildren().add(stlBranch);
+        treeItemRoot.getChildren().add(targetsBranch);
 
         var userPreferences = Preferences.userRoot().node("IGT_Settings");
         var matrixFile = userPreferences.get("visualisationTransformMatrix", "None selected!");
@@ -217,6 +221,16 @@ public class VisualizationController implements Controller {
             for (STLModel model : stlModels) {
                 TreeItem<String> stlFile = new TreeItem<>(model.getName());
                 stlBranch.getChildren().add(stlFile);
+            }
+        }
+    }
+
+    public void addTargetsToTreeView() {
+        LinkedList<Target> targets = visualizationManager.getTargets();
+        if (targets != null) {
+            for (Target target : targets) {
+                TreeItem<String> t = new TreeItem<>(target.getName());
+                targetsBranch.getChildren().add(t);
             }
         }
     }
