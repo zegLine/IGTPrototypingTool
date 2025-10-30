@@ -12,11 +12,21 @@ import util.Vector3D;
 public class Target extends Group {
     private Vector3D pos;
     private Sphere sphere;
+    private String name;
     public Target(double x, double y, double z) {
         sphere = new Sphere(5);
         sphere.setMaterial(new PhongMaterial(Color.RED));
         getChildren().add(sphere);
         setPos(x,y,z);
+        this.name = String.format("Target %s %s %s", pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    public Target(String name, double x, double y, double z) {
+        sphere = new Sphere(5);
+        sphere.setMaterial(new PhongMaterial(Color.RED));
+        getChildren().add(sphere);
+        setPos(x,y,z);
+        this.name = name;
     }
 
     public void setPos(double x, double y, double z) {
@@ -36,5 +46,9 @@ public class Target extends Group {
 
     public Sphere getSphere() {
         return sphere;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }
