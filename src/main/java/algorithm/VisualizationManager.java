@@ -2,6 +2,10 @@ package algorithm;
 
 import com.interactivemesh.jfx.importer.stl.StlMeshImporter;
 import controller.VisualizationController;
+import javafx.application.Platform;
+import javafx.geometry.Bounds;
+import javafx.scene.text.Font;
+import javafx.stage.Popup;
 import org.json.JSONObject;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -112,6 +116,28 @@ public class VisualizationManager {
 
     private ScrollPane scrollPane;
     private Group meshGroup;
+
+    private Group lastBuiltRoot;
+
+    private final Label hudLabel = new Label();
+    private final Popup hudPopup = new Popup();
+
+    public void setHudText(String text) {
+        hudLabel.setText(text);
+        // reposition after text size change
+        Platform.runLater(this::positionHudOverSubScene);
+    }
+
+    private void positionHudOverSubScene() {
+        // root3D is the SubScene's root passed to buildScene(); get its screen bounds
+        if (lastBuiltRoot == null) return; // see below
+        Bounds b = lastBuiltRoot.localToScreen(lastBuiltRoot.getBoundsInLocal());
+        if (b == null) return;
+
+        // 8px padding from top-left
+        hudPopup.setX(b.getMinX() + 8);
+        hudPopup.setY(b.getMinY() + 8);
+    }
 
     private boolean flagReloadMatrix = false;
 
@@ -331,6 +357,13 @@ public class VisualizationManager {
         flagReloadMatrix = true;
     }
 
+    private void positionHudOver(SubScene subScene) {
+        Bounds b = subScene.localToScreen(subScene.getBoundsInLocal());
+        if (b == null) return; // not laid out yet
+        hudPopup.setX(b.getMinX() + 8);
+        hudPopup.setY(b.getMinY() + 8);
+    }
+
     /**
      * Adds the Nodes and Controls to the Scene
      */
@@ -347,6 +380,38 @@ public class VisualizationManager {
         meshGroup.getChildren().add(subScene);
         // size will not impact the size of parent and resizing will also work when reducing the AnchorPane object's size
         subScene.setManaged(false);
+
+        if (hudPopup.getContent().isEmpty()) {
+            hudLabel.setFont(Font.font(16));
+            hudLabel.setStyle("-fx-background-color: rgba(0,0,0,0.6); -fx-text-fill: yellow; -fx-padding: 4 8; -fx-background-radius: 6;");
+            hudLabel.setText("Ready");
+            hudPopup.setAutoFix(true);
+            hudPopup.setAutoHide(false);
+            hudPopup.setHideOnEscape(false);
+            hudPopup.getContent().add(hudLabel);
+        }
+
+        // show once window is available, then position after layout
+        Platform.runLater(() -> {
+            if (subScene.getScene() != null && subScene.getScene().getWindow() != null) {
+                if (!hudPopup.isShowing()) hudPopup.show(subScene.getScene().getWindow());
+                positionHudOver(subScene);
+            }
+        });
+
+        // kee pinned on resize/moves
+        subScene.widthProperty().addListener((o, ov, nv) -> Platform.runLater(() -> positionHudOver(subScene)));
+        subScene.heightProperty().addListener((o, ov, nv) -> Platform.runLater(() -> positionHudOver(subScene)));
+        subScene.sceneProperty().addListener((o, oldS, newS) -> {
+            if (newS != null) {
+                newS.windowProperty().addListener((wo, wOld, wNew) -> {
+                    if (wNew != null && !hudPopup.isShowing()) hudPopup.show(wNew);
+                    Platform.runLater(() -> positionHudOver(subScene));
+                });
+            } else {
+                if (hudPopup.isShowing()) hudPopup.hide();
+            }
+        });
 
         handleKeyboard(scrollPane, cameraContainer);
         handleMouse(subScene, root);
