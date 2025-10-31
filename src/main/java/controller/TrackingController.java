@@ -194,8 +194,6 @@ public class TrackingController implements Controller {
             timeline.play();
             TrackingService.getInstance().changeTimeline(timeline);
 
-            visualizationManager.manuallyAddTarget("test t", 0.5, 0.5, 0.5);
-
             updateDiagrams();
             visualizationRunning.setValue(true);
             visualizationController.setVisualizationRunning(true);
