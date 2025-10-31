@@ -339,14 +339,18 @@ public class VisualizationManager {
         // loads the next set of tracking data
         trackingService.getTrackingDataSource().update();
         List<TrackingTool> trackingTools = trackingService.getDataService().loadNextData(1);
-
+        StringBuilder hudText = new StringBuilder();
         for (TrackingTool trackingTool : trackingTools) {
             if (flagReloadMatrix) {
                 trackingTool.loadTransformationMatrix();
             }
             trackingTool.show();
             trackingTool.checkBounds(stlModels);
+            String ht = String.valueOf(trackingTool.getName()) + String.valueOf(trackingTool.getLowestDistToTarget()) + "\n";
+            hudText.append(ht);
         }
+        this.setHudText(hudText.toString());
+
         flagReloadMatrix = false;
     }
 

@@ -34,6 +34,10 @@ public class Target extends Group {
         update();
     }
 
+    public Vector3D getPos() {
+        return pos;
+    }
+
     public void update() {
         setTranslateX(pos.getX());
         setTranslateY(pos.getY());

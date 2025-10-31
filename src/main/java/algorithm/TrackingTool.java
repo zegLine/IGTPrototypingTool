@@ -40,6 +40,12 @@ public class TrackingTool {
     private PhongMaterial color;
     private List<Target> targets;
 
+    public double getLowestDistToTarget() {
+        return lowestDistToTarget;
+    }
+
+    private double lowestDistToTarget = 10000.0f;
+
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     public TrackingTool(String name) {
@@ -195,14 +201,52 @@ public class TrackingTool {
      */
     public void checkTargets() {
         if (this.targets != null) {
+            double lowestDist = 10000.0;
+
             for (Target t: targets) {
                 if (projection.isVisible() && projection.intersectsTarget(t, cone.getPos())) {
                     t.setSphereColor(Color.GREEN);
                 } else {
                     t.setSphereColor(Color.RED);
                 }
+
+                double distToTarget = getDistanceToTarget(t);
+
+                if (distToTarget < lowestDist) lowestDist = distToTarget;
             }
+
+            this.lowestDistToTarget = lowestDist;
         }
+    }
+
+    /**
+     * Returns the Euclidean distance between the current position of the tool and a given target
+     * @param target the Target object to measure the distance to
+     * @return the distance as a double
+     */
+    public double getDistanceToTarget(Target target) {
+        if (pos == null || target == null) {
+            throw new IllegalStateException("either position or target is not initialized");
+        }
+        return pos.distTo(target.getPos());
+    }
+
+    /**
+     * Returns the individual X, Y, and Z distance components between this tool and the given target.
+     * @param target the Target object to measure the distances to
+     * @return a Vector3D representing the (dx, dy, dz) components
+     */
+    public Vector3D getDistanceComponentsTo(Target target) {
+        if (pos == null || target == null) {
+            throw new IllegalStateException("Position or target is not initialized");
+        }
+
+        Vector3D targetPos = target.getPos();
+        double dx = targetPos.getX() - pos.getX();
+        double dy = targetPos.getY() - pos.getY();
+        double dz = targetPos.getZ() - pos.getZ();
+
+        return new Vector3D(dx, dy, dz);
     }
 
     /**
