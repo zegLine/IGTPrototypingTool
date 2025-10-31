@@ -6,8 +6,10 @@ import algorithm.VisualizationManager;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -101,9 +103,67 @@ public class VisualizationController implements Controller {
         treeItemRoot.getChildren().add(stlBranch);
         treeItemRoot.getChildren().add(targetsBranch);
 
+        ContextMenu trackersContextMenu = new ContextMenu();
+        MenuItem addTargetItem = getMenuItem();
+        trackersContextMenu.getItems().addAll(addTargetItem);
+        stlTreeView.setOnContextMenuRequested(event -> {
+            TreeItem<String> selectedItem = stlTreeView.getSelectionModel().getSelectedItem();
+
+            if (selectedItem != null && "Targets".equals(selectedItem.getValue())) {
+                trackersContextMenu.show(stlTreeView, event.getScreenX(), event.getScreenY());
+            } else {
+                trackersContextMenu.hide();
+            }
+
+            event.consume();
+        });
+
         var userPreferences = Preferences.userRoot().node("IGT_Settings");
         var matrixFile = userPreferences.get("visualisationTransformMatrix", "None selected!");
         selectedMatrixFile.setText(Path.of(matrixFile).getFileName().toString());
+    }
+
+    /**
+     * Method to display popup for manually adding a target
+     */
+    private MenuItem getMenuItem() {
+        MenuItem addTargetItem = new MenuItem("Add new");
+        addTargetItem.setOnAction(e -> {
+            Dialog<Object[]> d = new Dialog<>();
+            d.setTitle("Add Target");
+            d.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            TextField name = new TextField();
+            TextField x = new TextField();
+            TextField y = new TextField();
+            TextField z = new TextField();
+
+            GridPane g = new GridPane();
+            g.setHgap(8); g.setVgap(8); g.setPadding(new Insets(10));
+            g.addRow(0, new Label("Name:"), name);
+            g.addRow(1, new Label("X:"), x);
+            g.addRow(2, new Label("Y:"), y);
+            g.addRow(3, new Label("Z:"), z);
+            d.getDialogPane().setContent(g);
+
+            d.setResultConverter(btn -> btn == ButtonType.OK
+                    ? new Object[]{ name.getText(), Double.parseDouble(x.getText()),
+                    Double.parseDouble(y.getText()), Double.parseDouble(z.getText()) }
+                    : null);
+
+            d.showAndWait().ifPresent(v -> {
+                String nameVal = (String) v[0];
+                double xv = (double) v[1];
+                double yv = (double) v[2];
+                double zv = (double) v[3];
+
+                System.out.println(nameVal + " -> " + xv + ", " + yv + ", " + zv);
+                VisualizationManager vm = new VisualizationManager();
+                vm.manuallyAddTarget(nameVal, xv, yv, zv);
+                this.addTargetsToTreeView();
+            });
+        });
+        return addTargetItem;
     }
 
     public void injectStatusLabel(Label statusLabel) {
@@ -226,11 +286,19 @@ public class VisualizationController implements Controller {
     }
 
     public void addTargetsToTreeView() {
-        LinkedList<Target> targets = visualizationManager.getTargets();
-        if (targets != null) {
-            for (Target target : targets) {
-                TreeItem<String> t = new TreeItem<>(target.getName());
-                targetsBranch.getChildren().add(t);
+        LinkedList<Target> targets = VisualizationManager.getTargets();
+        if (targets == null) return;
+
+        // Remove TreeItems that no longer exist
+        targetsBranch.getChildren().removeIf(item ->
+                targets.stream().noneMatch(t -> t.getName().equals(item.getValue())));
+
+        // Add any new targets that aren’t already present
+        for (Target target : targets) {
+            boolean exists = targetsBranch.getChildren().stream()
+                    .anyMatch(i -> i.getValue().equals(target.getName()));
+            if (!exists) {
+                targetsBranch.getChildren().add(new TreeItem<>(target.getName()));
             }
         }
     }

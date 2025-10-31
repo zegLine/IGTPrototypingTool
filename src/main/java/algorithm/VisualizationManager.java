@@ -1,11 +1,13 @@
 package algorithm;
 
 import com.interactivemesh.jfx.importer.stl.StlMeshImporter;
+import controller.VisualizationController;
 import org.json.JSONObject;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import shapes.CameraContainer;
@@ -99,14 +101,13 @@ public class VisualizationManager {
     /**
      * LinkedList of all trackers
      */
-    private LinkedList<Target> targets;
-    public LinkedList<Target> getTargets() {
+    private static final LinkedList<Target> targets = new LinkedList<>();
+    public static LinkedList<Target> getTargets() {
         return targets;
     }
     public void manuallyAddTarget(String name, double x, double y, double z) {
-        if (targets == null) targets = new LinkedList<>();
         Target t = new Target(name, x, y, z);
-        this.targets.add(t);
+        targets.add(t);
     }
 
     private ScrollPane scrollPane;
@@ -270,7 +271,6 @@ public class VisualizationManager {
             // https://mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             // Refresh the target list, everytime you load new targets
-            targets = new LinkedList<>();
             try {
                 dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
                 DocumentBuilder db = dbf.newDocumentBuilder();
@@ -278,8 +278,8 @@ public class VisualizationManager {
                 doc.getDocumentElement().normalize();
                 NodeList list = doc.getElementsByTagName("point");
                 for (int temp = 0; temp < list.getLength(); temp++) {
-                    org.w3c.dom.Node node = list.item(temp);
-                    if (node.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+                    Node node = list.item(temp);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
                         Element element = (Element) node;
                         double x = Double.parseDouble(element.getElementsByTagName("x").item(0).getTextContent());
                         double y = Double.parseDouble(element.getElementsByTagName("y").item(0).getTextContent());
