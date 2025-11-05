@@ -41,7 +41,7 @@ public class MainController implements Controller {
     @FXML
     Label status;
     private FXMLLoader loader;
-	private ExampleController exampleController;
+	private CustomTargetController customTargetController;
     private SettingsController settingsController;
     private final VisualizationManager visualizationManager = new VisualizationManager();
     private final Logger logger = Logger.getLogger(this.getClass().getName());
@@ -131,23 +131,23 @@ public class MainController implements Controller {
     }
 	
 	@FXML
-    private void openExampleView(){
-        if (this.exampleController != null) return;
+    private void openCustomTargetView(){
+        if (this.customTargetController != null) return;
 
         try {
-            setupFXMLLoader("ExampleView");
-            Tab t = new Tab("Example", this.loader.load());
+            setupFXMLLoader("CustomTargetView");
+            Tab t = new Tab("Custom Target", this.loader.load());
 
-            this.exampleController = this.loader.getController();
+            this.customTargetController = this.loader.getController();
 
             this.tabPane.getTabs().add(t);
             this.tabPane.getSelectionModel().select(t);
             t.setOnCloseRequest(e -> {
-                this.exampleController.close();
-                this.exampleController = null;
+                this.customTargetController.close();
+                this.customTargetController = null;
             });
         } catch(IOException e) {
-            logger.log(Level.SEVERE, "Error loading Example View", e);
+            logger.log(Level.SEVERE, "Error loading Custom Target View", e);
         }
     }
 

@@ -12,7 +12,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class ExampleController implements Controller {
+public class CustomTargetController implements Controller {
 
     @FXML
     public Label trackingDataLabel;

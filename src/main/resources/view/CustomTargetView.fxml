@@ -7,7 +7,7 @@
 <?import javafx.scene.control.ScrollPane?>
 
 <?import javafx.scene.image.ImageView?>
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ExampleController">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CustomTargetController">
 	<VBox alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" spacing="20.0">
 		  <Label fx:id="trackingDataLabel" text="Tracking Data: [ 0.0 ; 0.0 ; 0.0 ]" />
 		  <Button fx:id="exampleButton" text="Example: Get Tracking Data" onAction="#on_exampleButton"/>

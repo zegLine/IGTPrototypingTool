@@ -25,7 +25,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Window">
                 <Menu mnemonicParsing="false" text="Show View">
-					<MenuItem mnemonicParsing="false" onAction="#openExampleView" text="Example" />
+					<MenuItem mnemonicParsing="false" onAction="#openCustomTargetView" text="Custom Target" />
                 </Menu>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
