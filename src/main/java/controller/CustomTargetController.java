@@ -2,10 +2,14 @@ package controller;
 import algorithm.ImageDataManager;
 import algorithm.TrackingData;
 import algorithm.TrackingService;
+import algorithm.VisualizationManager;
 import inputOutput.VideoSource;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 
 import java.net.URL;
@@ -17,9 +21,9 @@ public class CustomTargetController implements Controller {
     @FXML
     public Label trackingDataLabel;
     @FXML
-    public Button exampleButton;
-    @FXML
     public ImageView imageView;
+    @FXML
+    private ListView<String> targetsListView;
 
     private boolean videoConnected = false;
     private ImageDataManager imageDataManager = new ImageDataManager();
@@ -28,43 +32,18 @@ public class CustomTargetController implements Controller {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         registerController();
+        ObservableList<String> targetItems = FXCollections.observableArrayList(
+                VisualizationManager.getTargets()
+                        .stream()
+                        .map(Object::toString) // calls toString() on each target
+                        .toList()
+        );
+        targetsListView.setItems(targetItems);
     }
 
     @Override
     public void close() {
         unregisterController();
-    }
-
-    public void on_exampleButton(){
-        //Example for getting tracking data
-        String s = "";
-        TrackingService t = TrackingService.getInstance();
-        if (t.getTrackingDataSource()!=null) {
-            t.getTrackingDataSource().update();
-            List<TrackingData> li = t.getDataService().loadNextData(1).get(0).getMeasurement();
-            s = "Tracking Coordinates: " + li.get(li.size() - 1).getPos();
-        }
-        else{
-            s = "No tracker connected";
-        }
-        trackingDataLabel.setText(s);
-        System.out.println(s);
-
-
-    }
-    public void  on_exampleVideoButton(){
-        //Example for grabbing a video stream from device id 0
-        if(!videoConnected) {
-            videoConnected = imageDataManager.openConnection(VideoSource.LIVESTREAM, 1);
-        }
-        if(videoConnected){
-            imageView.setImage(imageDataManager.readImg());
-            System.out.println("Updated video");
-        }
-        else{
-            System.out.println("Could not connect to video source id 0");
-        }
-
     }
 
 }
