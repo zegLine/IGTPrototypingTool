@@ -55,4 +55,8 @@ public class Target extends Group {
     public String getName() {
         return this.name;
     }
+
+    public String toString() {
+        return this.name + String.format("%s %s %s", pos.getX(),  pos.getY(), pos.getZ());
+    }
 }
