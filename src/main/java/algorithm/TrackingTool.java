@@ -453,4 +453,13 @@ public class TrackingTool {
     public void printPos() {
         System.out.println("X: " + pos.getX() + " Y: " + pos.getY() + " Z: " + pos.getZ());
     }
+
+    public Vector3D getPos() {
+        return pos;
+    }
+
+    public String getPosString() {
+        return String.format("X: %.2f  Y: %.2f  Z: %.2f",
+                pos.getX(), pos.getY(), pos.getZ());
+    }
 }
