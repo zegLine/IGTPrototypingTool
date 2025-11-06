@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
+import javafx.scene.shape.Circle;
 import shapes.Target;
 import util.Vector3D;
 
@@ -38,6 +39,10 @@ public class CustomTargetController implements Controller {
 
     private Target selectedTarget;
     private TrackingTool selectedTool;
+
+    @FXML private Circle xCircle;
+    @FXML private Circle yCircle;
+    @FXML private Circle zCircle;
     
 
     @Override
@@ -119,8 +124,21 @@ public class CustomTargetController implements Controller {
         String toolPosLine = "POS: "   + (selectedTool   != null ? selectedTool.getPosString() : "—");
 
         augmentationLabel.setText(base + "\n" + targetLine + "\n" + toolLine + "\n" + toolPosLine);
+        updateDistanceVisualization(dist);
     }
 
+    private void updateDistanceVisualization(double[] dist) {
+        double maxDistance = 1000.0; // sensitivity
+        double scale = 100.0 / maxDistance; // pixel movement per unit distance
+
+        double dx = Math.max(-maxDistance, Math.min(maxDistance, dist[0]));
+        double dy = Math.max(-maxDistance, Math.min(maxDistance, dist[1]));
+        double dz = Math.max(-maxDistance, Math.min(maxDistance, dist[2]));
+
+        if (xCircle != null) xCircle.setTranslateX(dx * scale);
+        if (yCircle != null) yCircle.setTranslateX(dy * scale);
+        if (zCircle != null) zCircle.setTranslateX(dz * scale);
+    }
 
     @Override
     public void close() {

@@ -10,6 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.geometry.Insets?>
 
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Circle?>
 <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="Infinity" maxWidth="Infinity"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
@@ -60,8 +63,33 @@
                        maxWidth="500.0" />
 
             </VBox>
-
         </HBox>
+        <AnchorPane fx:id="distanceVisualizer" prefHeight="100.0" prefWidth="300.0"
+                    style="-fx-border-color: #ccc; -fx-background-color: #fafafa;"
+                    VBox.vgrow="NEVER">
+            <!-- X axis -->
+            <HBox layoutY="10" spacing="5" alignment="CENTER_LEFT">
+                <Label text="X:" style="-fx-font-weight: bold;"/>
+                <StackPane prefWidth="200" prefHeight="8" style="-fx-background-color: #ddd;">
+                    <Circle fx:id="xCircle" radius="6" fill="#ff6666"/>
+                </StackPane>
+            </HBox>
 
+            <!-- Y axis -->
+            <HBox layoutY="40" spacing="5" alignment="CENTER_LEFT">
+                <Label text="Y:" style="-fx-font-weight: bold;"/>
+                <StackPane prefWidth="200" prefHeight="8" style="-fx-background-color: #ddd;">
+                    <Circle fx:id="yCircle" radius="6" fill="#66b3ff"/>
+                </StackPane>
+            </HBox>
+
+            <!-- Z axis -->
+            <HBox layoutY="70" spacing="5" alignment="CENTER_LEFT">
+                <Label text="Z:" style="-fx-font-weight: bold;"/>
+                <StackPane prefWidth="200" prefHeight="8" style="-fx-background-color: #ddd;">
+                    <Circle fx:id="zCircle" radius="6" fill="#66ff66"/>
+                </StackPane>
+            </HBox>
+        </AnchorPane>
     </VBox>
 </ScrollPane>
